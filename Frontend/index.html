@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompt Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 text-gray-900">
+    <!-- Navbar -->
+    <nav class="bg-indigo-600 p-4">
+        <div class="container mx-auto">
+            <h1 class="text-white text-2xl font-bold">Self Made AI</h1>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex flex-col items-center mt-8 px-4">
+        <!-- Search Form -->
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full md:w-1/2 lg:w-1/3 mb-8">
+            <h2 class="text-xl font-bold text-center mb-4">Ask To AI</h2>
+            <form id="promptForm" class="space-y-4">
+                <div>
+                    <label for="question" class="block text-sm font-medium text-gray-700">Enter your question:</label>
+                    <input type="text" id="question" name="question" class="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">Submit</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Response -->
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full md:w-4/5 lg:w-3/4">
+            <h2 class="text-xl font-bold text-center mb-4">Response</h2>
+            <div id="response" class="mt-4 text-gray-700"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('promptForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const question = document.getElementById('question').value;
+            const responseElement = document.getElementById('response');
+            responseElement.textContent = 'Generating response...';
+
+            try {
+                const response = await fetch('http://localhost:5000/api/content', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ question: question })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    responseElement.textContent = data.result;
+                } else {
+                    const errorData = await response.json();
+                    responseElement.textContent = `Error: ${errorData.message}`;
+                }
+            } catch (error) {
+                responseElement.textContent = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+
+</html>
