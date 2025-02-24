@@ -6,10 +6,17 @@ require('dotenv').config()
 
 const app = express()
 
+// app.use(cors({
+//     origin:[process.env.FRONTED_URL],
+//     credentials:true
+// }))
+
 app.use(cors({
-    origin:[process.env.FRONTED_URL],
-    credentials:true
-}))
+    origin: '*', // You can replace '*' with a specific frontend URL like 'http://localhost:3000'
+    methods: 'GET,POST,PUT,DELETE',
+    allowedHeaders: 'Content-Type,Authorization'
+}));
+
 
 app.use(bodyParser.json())
 app.use(express.json())
